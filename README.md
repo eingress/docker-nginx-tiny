@@ -1,6 +1,6 @@
 # Nginx Tiny
 
-A bare-bones Nginx build for serving static assets over HTTP only, intended for use behind a TLS terminating load balancer in a docker swarm.
+A minimalist Nginx build for serving static assets over HTTP only; intended for use behind a TLS terminating load balancer in a docker swarm.
 
 Run using the bundled lightweight nginx.conf…
 
