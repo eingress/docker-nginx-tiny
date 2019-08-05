@@ -10,6 +10,6 @@ docker run -d -p 8080:80 eingressio/nginx-tiny
 
 …or using a custom nginx.conf
 
-```shell
+```sh
 docker run -d -p 8080:80 -v /path/to/nginx.conf:/usr/local/nginx/conf/nginx.conf eingressio/nginx-tiny
 ```
