@@ -2,7 +2,7 @@ FROM alpine
 
 LABEL maintainer "Scott Mathieson <scott@eingress.io>"
 
-ARG NGINX_VERSION=1.17.2
+ARG NGINX_VERSION=1.17.3
 
 RUN apk add -t build-deps --no-cache --update \
 	build-base wget zlib-dev && \
