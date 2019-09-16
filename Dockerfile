@@ -1,21 +1,30 @@
-FROM alpine
+# builder
+
+ARG ALPINE_VERSION
+
+FROM alpine:$ALPINE_VERSION as builder
 
 LABEL maintainer "Scott Mathieson <scott@eingress.io>"
 
-ARG NGINX_VERSION=1.17.3
+ARG NGINX_VERSION
 
-RUN apk add -t build-deps --no-cache --update \
-	build-base wget zlib-dev && \
-	mkdir -p /build && \
+RUN apk add --no-cache --update \
+	build-base \
+	wget \
+	zlib-dev
+
+RUN mkdir -p /build && \
 	cd /build && \
-	wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
-	tar -zxvf nginx-${NGINX_VERSION}.tar.gz && \
-	cd /build/nginx-${NGINX_VERSION} && \
-	./configure \
-	--error-log-path=/var/log/nginx/error.log \
-	--http-log-path=/var/log/nginx/access.log \
+	wget -q http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
+	tar -zxvf nginx-${NGINX_VERSION}.tar.gz
+
+WORKDIR /build/nginx-${NGINX_VERSION}
+
+RUN	./configure \
+	--error-log-path=/dev/stderr \
+	--http-log-path=/dev/stdout \
 	--with-cc-opt="-O2" \
-	--with-ld-opt="-s" \
+	--with-ld-opt="-s -static" \
 	--without-http_access_module \
 	--without-http_auth_basic_module \
 	--without-http_autoindex_module \
@@ -40,20 +49,27 @@ RUN apk add -t build-deps --no-cache --update \
 	--without-http_upstream_zone_module \
 	--without-http_userid_module \
 	--without-http_uwsgi_module \
-	&& make && make install && \
-	rm -rf /build && \
-	apk del build-deps
+	&& make -j $(grep processor /proc/cpuinfo | wc -l) \
+	&& make install \
+	&& strip /usr/local/nginx/sbin/nginx
 
 
 RUN addgroup -S nginx && adduser -S -G nginx nginx
 RUN chown -R nginx /usr/local/nginx/html
-RUN ln -sf /dev/stdout /var/log/nginx/access.log
-RUN ln -sf /dev/stderr /var/log/nginx/error.log
 
-COPY nginx.conf /usr/local/nginx/conf/nginx.conf
+# release
 
-ENV PATH="/usr/local/nginx/sbin:${PATH}"
+FROM scratch
+
+COPY --from=builder /usr/local/nginx /usr/local/nginx
+COPY --from=builder /etc/passwd /etc/group /etc/
+
+COPY nginx.conf /usr/local/nginx/conf/
+
+STOPSIGNAL SIGQUIT
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/usr/local/nginx/sbin/nginx"]
+
+CMD ["-g", "daemon off;"]
