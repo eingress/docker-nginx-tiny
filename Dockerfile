@@ -4,8 +4,6 @@ ARG ALPINE_VERSION
 
 FROM alpine:$ALPINE_VERSION as builder
 
-LABEL maintainer "Scott Mathieson <scott@eingress.io>"
-
 ARG NGINX_VERSION
 
 RUN apk add --no-cache --update \
@@ -60,6 +58,8 @@ RUN chown -R nginx /usr/local/nginx/html
 # release
 
 FROM scratch
+
+LABEL maintainer "Scott Mathieson <scott@eingress.io>"
 
 COPY --from=builder /usr/local/nginx /usr/local/nginx
 COPY --from=builder /etc/passwd /etc/group /etc/
