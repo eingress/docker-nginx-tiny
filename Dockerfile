@@ -9,7 +9,8 @@ ARG NGINX_VERSION
 RUN apk add --no-cache --update \
 	build-base \
 	wget \
-	zlib-dev
+	zlib-dev \
+	zlib-static
 
 RUN mkdir -p /build && \
 	cd /build && \
