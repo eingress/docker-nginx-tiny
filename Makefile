@@ -15,6 +15,6 @@ build:
 		.
 
 push:
-	docker push $$IMAGE_NAME
+	docker push --all-tags $$IMAGE_NAME
 
 release: build push
