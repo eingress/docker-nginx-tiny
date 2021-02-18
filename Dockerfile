@@ -48,7 +48,7 @@ RUN	./configure \
 	--without-http_upstream_zone_module \
 	--without-http_userid_module \
 	--without-http_uwsgi_module \
-	&& make -j $(grep processor /proc/cpuinfo | wc -l) \
+	&& make -j$(getconf _NPROCESSORS_ONLN) \
 	&& make install \
 	&& strip /usr/local/nginx/sbin/nginx
 
