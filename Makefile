@@ -1,20 +1,18 @@
-
 include .env
 export
 
 SHELL := /bin/bash
 
-.PHONY: build push release
+.PHONY: build release
 
 build:
-	docker build --squash \
+	docker buildx build \
 		--build-arg ALPINE_VERSION=$$ALPINE_VERSION \
 		--build-arg NGINX_VERSION=$$NGINX_VERSION \
+		--platform linux/amd64,linux/arm64 \
+		--push \
 		-t $$IMAGE_NAME:$$IMAGE_VERSION \
 		-t $$IMAGE_NAME:latest \
 		.
 
-push:
-	docker push --all-tags $$IMAGE_NAME
-
-release: build push
+release: build
