@@ -1,4 +1,4 @@
-name: ci
+name: CI
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
-    
+
     steps:
       -
         name: Set up QEMU
@@ -29,5 +29,5 @@ jobs:
         name: Read environment variables
         uses: falti/dotenv-action@v1.0.4
       -
-        name: Build and push
+        name: Build and Push
         run: make release
