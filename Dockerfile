@@ -2,7 +2,7 @@
 
 ARG ALPINE_VERSION
 
-FROM alpine:$ALPINE_VERSION as builder
+FROM alpine:${ALPINE_VERSION:-3.20} AS builder
 
 ARG NGINX_VERSION
 
@@ -60,7 +60,7 @@ RUN chown -R nginx /usr/local/nginx/html
 
 FROM scratch
 
-LABEL maintainer "Scott Mathieson <scott@eingress.io>"
+LABEL maintainer="Scott Mathieson <scott@eingress.io>"
 
 COPY --from=builder /usr/local/nginx /usr/local/nginx
 COPY --from=builder /etc/passwd /etc/group /etc/
