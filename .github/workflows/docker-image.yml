@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v4
       -
         name: Read environment variables
-        uses: falti/dotenv-action@v1.0.4
+        uses: falti/dotenv-action@v1.1.4
       -
         name: Build and Push
         run: make release
