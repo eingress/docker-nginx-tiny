@@ -48,6 +48,7 @@ RUN	./configure \
 	--without-http_upstream_zone_module \
 	--without-http_userid_module \
 	--without-http_uwsgi_module \
+	--without-pcre \
 	&& make -j$(getconf _NPROCESSORS_ONLN) \
 	&& make install \
 	&& strip /usr/local/nginx/sbin/nginx
